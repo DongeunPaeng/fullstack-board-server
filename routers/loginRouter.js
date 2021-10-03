@@ -29,14 +29,17 @@ loginRouter.post("/", async (req, res) => {
       return;
     }
 
-    const token = createToken(user);
-    const decodedToken = jwtDecode(token);
-    const expiresAt = decodedToken.exp;
+    const refreshToken = createToken(user, "refresh");
 
-    res.cookie("token", token, { httpOnly: true });
-    res
-      .status(200)
-      .json({ message: "Welcome back!", token, user: user.email, expiresAt });
+    const accessToken = createToken(user, "access");
+    const decodedAccessToken = jwtDecode(accessToken);
+    const expiresAt = decodedAccessToken.exp;
+
+    res.cookie("refresh_token", refreshToken, {
+      maxAge: 168 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
+    res.status(200).json({ accessToken, user, expiresAt });
   } catch (err) {
     return res.status(500).send(err);
   }
