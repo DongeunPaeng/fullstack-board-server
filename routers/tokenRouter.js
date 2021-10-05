@@ -23,7 +23,7 @@ tokenRouter.get("/", async (req, res) => {
       expiresAt,
     });
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).json({ message: err });
   }
 });
 

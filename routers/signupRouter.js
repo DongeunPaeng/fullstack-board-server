@@ -36,7 +36,10 @@ signupRouter.post("/", async (req, res) => {
       const decodedAccessToken = jwtDecode(accessToken);
       const expiresAt = decodedAccessToken.exp;
 
-      res.cookie("refresh_token", refreshToken, { maxAge: 168 * 60 * 60 * 1000, httpOnly: true });
+      res.cookie("refresh_token", refreshToken, {
+        maxAge: 168 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
       res.status(200).json({
         user: newUser,
         accessToken,
@@ -44,7 +47,7 @@ signupRouter.post("/", async (req, res) => {
       });
     }
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).json({ message: err });
   }
 });
 

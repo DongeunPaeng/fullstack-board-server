@@ -41,7 +41,7 @@ loginRouter.post("/", async (req, res) => {
     });
     res.status(200).json({ accessToken, user, expiresAt });
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).json({ message: err });
   }
 });
 

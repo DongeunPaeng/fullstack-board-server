@@ -14,6 +14,7 @@ const loginRouter = require("./routers/loginRouter");
 const signupRouter = require("./routers/signupRouter");
 const tokenRouter = require("./routers/tokenRouter");
 const logoutRouter = require("./routers/logoutRouter");
+const postRouter = require("./routers/postRouter");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/login", loginRouter);
 app.use("/api/signup", signupRouter);
 app.use("/api/request-access-token", tokenRouter);
 app.use("/api/logout", logoutRouter);
+app.use("/api/posts", postRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));
