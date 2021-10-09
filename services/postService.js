@@ -16,13 +16,13 @@ class PostService {
   };
 
   // FIXME dongeun: finish this service
-  writePost = async (id, post) => {
+  writePost = async (title, id, post) => {
     try {
-      const queryString = `insert into posts (author, post, title, created_at) values (?, ?, 'Title Not Yet', now())`;
-      const args = [id, post];
+      const queryString = `insert into posts (author, post, title, created_at) values (?, ?, ?, now())`;
+      const args = [id, post, title];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
-        return rows;
+        return rows.insertId;
       };
       return await query(fn);
     } catch (err) {
