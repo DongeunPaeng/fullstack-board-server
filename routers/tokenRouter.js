@@ -11,14 +11,21 @@ tokenRouter.get("/", async (req, res) => {
     const decodedRefreshToken = jwtDecode(refreshToken);
     if (!decodedRefreshToken)
       return res.status(403).json({ message: "not allowed to access" });
-    const accessToken = createToken(decodedRefreshToken);
+
+    // FIXME dongeun: check the expiration date before issuing accessToken
+
+    const { sub, email } = decodedRefreshToken;
+
+    const user = {
+      sub,
+      email,
+    };
+
+    const accessToken = createToken(user, "access");
     const expiresAt = jwtDecode(accessToken).exp;
-    // respond with user object, access token, and expiration time.
+
     return res.status(200).json({
-      user: {
-        sub: decodedRefreshToken.sub,
-        email: decodedRefreshToken.email,
-      },
+      user,
       accessToken,
       expiresAt,
     });

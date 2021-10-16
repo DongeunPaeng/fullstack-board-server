@@ -32,7 +32,7 @@ app.use("/api/login", loginRouter);
 app.use("/api/signup", signupRouter);
 app.use("/api/request-access-token", tokenRouter);
 app.use("/api/logout", logoutRouter);
-app.use("/api/posts", postRouter);
+app.use("/api/post", postRouter);
 
 app.use(function (req, res, next) {
   next(createError(404));

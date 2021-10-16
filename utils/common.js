@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const jwtDecode = require("jwt-decode");
 
 const verifyPassword = (passwordAttempt, hashedPassword) => {
   return bcrypt.compare(passwordAttempt, hashedPassword);
@@ -18,7 +19,7 @@ const hashPassword = async (password) => {
 const createToken = (user, type) => {
   const token = jwt.sign(
     {
-      sub: user.sub,
+      sub: user.sub ?? user.id,
       email: user.email,
       iss: "dongeunpaeng",
       aud: "dongeunpaeng",

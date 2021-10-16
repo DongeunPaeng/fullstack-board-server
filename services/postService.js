@@ -1,6 +1,20 @@
 const query = require("../utils/query");
 
 class PostService {
+  getPost = async (postId) => {
+    try {
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author from posts A left join users B on A.author = B.id where A.id = ?`;
+      const args = [postId];
+      const fn = async (conn) => {
+        const [rows] = await conn.query(queryString, args);
+        return rows;
+      };
+      return await query(fn);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
   getPosts = async () => {
     try {
       const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author from posts A left join users B on A.author = B.id`;
@@ -15,11 +29,38 @@ class PostService {
     }
   };
 
-  // FIXME dongeun: finish this service
   writePost = async (title, id, post) => {
     try {
       const queryString = `insert into posts (author, post, title, created_at) values (?, ?, ?, now())`;
       const args = [id, post, title];
+      const fn = async (conn) => {
+        const [rows] = await conn.query(queryString, args);
+        return rows.insertId;
+      };
+      return await query(fn);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
+  editPost = async (title, post, postId) => {
+    try {
+      const queryString = `update posts set title = ?, post = ? where id = ?`;
+      const args = [title, post, postId];
+      const fn = async (conn) => {
+        const [rows] = await conn.query(queryString, args);
+        return rows.insertId;
+      };
+      return await query(fn);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
+  deletePost = async (postId) => {
+    try {
+      const queryString = `delete from posts where id = ?`;
+      const args = [postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;

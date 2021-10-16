@@ -17,21 +17,72 @@ postRouter.get("/", async (req, res) => {
   }
 });
 
-// FIXME dongeun: finish this service
-postRouter.post("/", async (req, res) => {
+postRouter.get("/:id", async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  const postId = id;
+
+  try {
+    const queryResults = await postService.getPost(postId);
+    const post = queryResults[0];
+
+    res.status(200).json({ post });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "something went wrong! sorry." });
+  }
+});
+
+postRouter.post("/write", async (req, res) => {
   const {
     body: { title, post, accessToken },
   } = req;
 
-  const { email } = jwtDecode(accessToken);
+  const { sub } = jwtDecode(accessToken);
   // FIXME dongeun: Check expiration time of the token!
 
   try {
-    const insertId = await postService.writePost(title, email, post);
+    const insertId = await postService.writePost(title, sub, post);
     if (insertId) {
       // FIXME dongeun: do something here, or don't make the insertId variable
     }
     res.status(200).json({ message: "Upload success!" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "something went wrong! sorry." });
+  }
+});
+
+postRouter.post("/edit", async (req, res) => {
+  const {
+    body: { title, post, postId },
+  } = req;
+
+  try {
+    const insertId = await postService.editPost(title, post, postId);
+    if (insertId) {
+      // FIXME dongeun: do something here, or don't make the insertId variable
+    }
+    res.status(200).json({ message: "Edit success!" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "something went wrong! sorry." });
+  }
+});
+
+postRouter.post("/delete", async (req, res) => {
+  const {
+    body: { postId },
+  } = req;
+
+  try {
+    const insertId = await postService.deletePost(postId);
+    if (insertId) {
+      // FIXME dongeun: do something here, or don't make the insertId variable
+    }
+    res.status(200).json({ message: "Delete success!" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "something went wrong! sorry." });
