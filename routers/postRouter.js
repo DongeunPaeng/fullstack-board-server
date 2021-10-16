@@ -1,6 +1,8 @@
 const express = require("express");
 const jwtDecode = require("jwt-decode");
 
+const { verifyToken } = require("../utils/common");
+
 const PostService = require("../services/postService");
 const postService = new PostService();
 
@@ -35,12 +37,12 @@ postRouter.get("/:id", async (req, res) => {
   }
 });
 
-postRouter.post("/write", async (req, res) => {
+postRouter.post("/write", verifyToken, async (req, res) => {
   const {
-    body: { title, post, accessToken },
+    body: { title, post },
+    user: { sub },
   } = req;
 
-  const { sub } = jwtDecode(accessToken);
   // FIXME dongeun: Check expiration time of the token!
 
   try {
@@ -55,7 +57,7 @@ postRouter.post("/write", async (req, res) => {
   }
 });
 
-postRouter.post("/edit", async (req, res) => {
+postRouter.post("/edit", verifyToken, async (req, res) => {
   const {
     body: { title, post, postId },
   } = req;
@@ -72,7 +74,7 @@ postRouter.post("/edit", async (req, res) => {
   }
 });
 
-postRouter.post("/delete", async (req, res) => {
+postRouter.post("/delete", verifyToken, async (req, res) => {
   const {
     body: { postId },
   } = req;

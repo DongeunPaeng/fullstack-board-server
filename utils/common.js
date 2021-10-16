@@ -2,6 +2,24 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const jwtDecode = require("jwt-decode");
 
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  const decodedToken = token ? jwtDecode(token) : null;
+
+  if (!token) {
+    return res.status(401).json({ message: "Not authorized!" });
+  }
+  if (decodedToken?.exp * 1000 < Date.now()) {
+    return res.status(401).json({ message: "Not authorized!" });
+  }
+  jwt.verify(token, process.env.JWT_SECRET, async (err, user) => {
+    if (err) return res.status(403).json({ message: "Not authorized!" });
+    req.user = user;
+    next();
+  });
+};
+
 const verifyPassword = (passwordAttempt, hashedPassword) => {
   return bcrypt.compare(passwordAttempt, hashedPassword);
 };
@@ -31,4 +49,4 @@ const createToken = (user, type) => {
   return token;
 };
 
-module.exports = { verifyPassword, hashPassword, createToken };
+module.exports = { verifyToken, verifyPassword, hashPassword, createToken };

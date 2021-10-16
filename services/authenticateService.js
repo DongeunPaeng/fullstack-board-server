@@ -3,7 +3,7 @@ const query = require("../utils/query");
 class AuthenticateService {
   getUser = async (email) => {
     try {
-      const queryString = `select * from users where email = ?`;
+      const queryString = `select * from users where email = ? and deleted = 0`;
       const args = [email];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
