@@ -7,7 +7,7 @@ class UserService {
       const args = [id];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
-        return rows.insertId;
+        return rows.affectedRows;
       };
       return await query(fn);
     } catch (err) {

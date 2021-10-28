@@ -22,6 +22,11 @@ loginRouter.post("/", async (req, res) => {
       return;
     }
 
+    if (user['deleted'] === 1) {
+      res.status(403).json({ message: "no such user!" });
+      return;
+    }
+
     const passwordValid = await verifyPassword(password, user.password);
 
     if (!passwordValid) {
@@ -40,6 +45,36 @@ loginRouter.post("/", async (req, res) => {
       httpOnly: true,
     });
     res.status(200).json({ accessToken, user, expiresAt });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+});
+
+loginRouter.post("/find-password", async (req, res) => {
+  const {
+    body: { email },
+  } = req;
+
+  try {
+    const queryResults = await authenticateService.getUser(email);
+    const user = queryResults[0];
+
+    if (!user) {
+      res.status(406).json({ message: "no such user!" });
+      return;
+    }
+
+    if (user['deleted'] === 1) {
+      res.status(406).json({ message: "no such user!" });
+      return;
+    }
+
+    const clues = {
+      firstLetter: user["first_letter"],
+      lastLetter: user["last_letter"],
+      length: user["length"],
+    };
+    return res.status(200).json(clues);
   } catch (err) {
     return res.status(500).json({ message: err });
   }

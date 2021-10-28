@@ -13,11 +13,12 @@ userRouter.post("/", verifyToken, async (req, res) => {
   } = req;
 
   try {
-    const insertId = await userService.deleteUser(sub);
-    if (insertId) {
-      // FIXME dongeun: do something here, or don't make the insertId variable
+    const affectedRows = await userService.deleteUser(sub);
+    if (affectedRows) {
+      res.clearCookie("refresh_token");
+      res.status(200).json({ message: "Delete success!" });
+      // FIXME(dongeun): what's the difference between res and return res?
     }
-    res.status(200).json({ message: "Delete success!" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "something went wrong! sorry." });

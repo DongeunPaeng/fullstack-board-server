@@ -3,6 +3,7 @@ require("dotenv").config();
 
 const createError = require("http-errors");
 const express = require("express");
+const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
@@ -35,6 +36,12 @@ app.use("/api/request-access-token", tokenRouter);
 app.use("/api/logout", logoutRouter);
 app.use("/api/post", postRouter);
 app.use("/api/delete", userRouter);
+
+app.use(express.static(path.join(__dirname, "build")));
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 app.use(function (req, res, next) {
   next(createError(404));
