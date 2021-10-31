@@ -7,12 +7,14 @@ const tokenRouter = express.Router();
 tokenRouter.get("/", async (req, res) => {
   try {
     const cookies = req.cookies;
-    const refreshToken = cookies.refresh_token;
-    const decodedRefreshToken = jwtDecode(refreshToken);
-    if (!decodedRefreshToken)
-      return res.status(403).json({ message: "not allowed to access" });
-
-    // FIXME dongeun: check the expiration date before issuing accessToken
+    const token = cookies.refresh_token;
+    const decodedRefreshToken = token ? jwtDecode(token) : null;
+    if (!token) {
+      return res.status(401).json({ message: "Not authorized!" });
+    }
+    if (decodedRefreshToken?.exp * 1000 < Date.now()) {
+      return res.status(401).json({ message: "Not authorized!" });
+    }
 
     const { sub, email } = decodedRefreshToken;
 
