@@ -9,6 +9,7 @@ tokenRouter.get("/", async (req, res) => {
     const cookies = req.cookies;
     const token = cookies.refresh_token;
     const decodedRefreshToken = token ? jwtDecode(token) : null;
+
     if (!token) {
       return res.status(401).json({ message: "Not authorized!" });
     }

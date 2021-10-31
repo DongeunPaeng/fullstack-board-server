@@ -22,7 +22,7 @@ loginRouter.post("/", async (req, res) => {
       return;
     }
 
-    if (user['deleted'] === 1) {
+    if (user["deleted"] === 1) {
       res.status(403).json({ message: "no such user!" });
       return;
     }
@@ -35,10 +35,11 @@ loginRouter.post("/", async (req, res) => {
     }
 
     const refreshToken = createToken(user, "refresh");
-
     const accessToken = createToken(user, "access");
     const decodedAccessToken = jwtDecode(accessToken);
     const expiresAt = decodedAccessToken.exp;
+
+    user["sub"] = user["id"];
 
     res.cookie("refresh_token", refreshToken, {
       maxAge: 168 * 60 * 60 * 1000,
@@ -64,7 +65,7 @@ loginRouter.post("/find-password", async (req, res) => {
       return;
     }
 
-    if (user['deleted'] === 1) {
+    if (user["deleted"] === 1) {
       res.status(406).json({ message: "no such user!" });
       return;
     }
