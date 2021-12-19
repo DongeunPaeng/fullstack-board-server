@@ -5,6 +5,7 @@ const query = async (fn) => {
     const connection = await pool.getConnection(async (conn) => conn);
     try {
       const result = await fn(connection);
+      connection.release();
       return result;
     } catch (err) {
       connection.release();
@@ -15,4 +16,4 @@ const query = async (fn) => {
   }
 };
 
-module.exports = query
+module.exports = query;
