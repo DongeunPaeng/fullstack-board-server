@@ -17,11 +17,11 @@ userRouter.post("/", verifyToken, async (req, res) => {
     if (affectedRows) {
       res.clearCookie("refresh_token");
       res.status(200).json({ message: "Delete success!" });
-      // FIXME(dongeun): what's the difference between res and return res?
     }
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: "something went wrong! sorry." });
+    res.status(500).json({ message: "something went wrong! sorry." });
+    // FIXME(dongteun): check if this works. I removed 'return'.
   }
 });
 

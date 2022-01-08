@@ -43,13 +43,8 @@ postRouter.post("/write", verifyToken, async (req, res) => {
     user: { sub },
   } = req;
 
-  // FIXME dongeun: Check expiration time of the token!
-
   try {
-    const insertId = await postService.writePost(title, sub, post);
-    if (insertId) {
-      // FIXME dongeun: do something here, or don't make the insertId variable
-    }
+    await postService.writePost(title, sub, post);
     res.status(200).json({ message: "Upload success!" });
   } catch (err) {
     console.log(err);
@@ -63,10 +58,7 @@ postRouter.post("/edit", verifyToken, async (req, res) => {
   } = req;
 
   try {
-    const insertId = await postService.editPost(title, post, postId);
-    if (insertId) {
-      // FIXME dongeun: do something here, or don't make the insertId variable
-    }
+    await postService.editPost(title, post, postId);
     res.status(200).json({ message: "Edit success!" });
   } catch (err) {
     console.log(err);
@@ -80,10 +72,7 @@ postRouter.post("/delete", verifyToken, async (req, res) => {
   } = req;
 
   try {
-    const insertId = await postService.deletePost(postId);
-    if (insertId) {
-      // FIXME dongeun: do something here, or don't make the insertId variable
-    }
+    await postService.deletePost(postId);
     res.status(200).json({ message: "Delete success!" });
   } catch (err) {
     console.log(err);
