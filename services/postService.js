@@ -29,10 +29,11 @@ class PostService {
     }
   };
 
-  writePost = async (title, id, post) => {
+  writePost = async (title, id, post, isPrivate) => {
+    const defaultStatus = isPrivate ? 2 : 0;
     try {
-      const queryString = `insert into posts (author, post, title, created_at) values (?, ?, ?, now())`;
-      const args = [id, post, title];
+      const queryString = `insert into posts (author, post, title, deleted, created_at) values (?, ?, ?, ?, now())`;
+      const args = [id, post, title, defaultStatus];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;
@@ -43,10 +44,11 @@ class PostService {
     }
   };
 
-  editPost = async (title, post, postId) => {
+  editPost = async (title, post, postId, isPrivate) => {
+    const defaultStatus = isPrivate ? 2 : 0;
     try {
-      const queryString = `update posts set title = ?, post = ? where id = ?`;
-      const args = [title, post, postId];
+      const queryString = `update posts set title = ?, post = ?, deleted = ? where id = ?`;
+      const args = [title, post, postId, defaultStatus];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;
