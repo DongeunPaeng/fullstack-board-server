@@ -48,7 +48,7 @@ class PostService {
     const defaultStatus = isPrivate ? 2 : 0;
     try {
       const queryString = `update posts set title = ?, post = ?, deleted = ? where id = ?`;
-      const args = [title, post, postId, defaultStatus];
+      const args = [title, post, defaultStatus, postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;
