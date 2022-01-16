@@ -5,9 +5,9 @@ const { verifyToken } = require("../utils/common");
 const UserService = require("../services/userService");
 const userService = new UserService();
 
-const userRouter = express.Router();
+const deleteRouter = express.Router();
 
-userRouter.post("/", verifyToken, async (req, res) => {
+deleteRouter.post("/", verifyToken, async (req, res) => {
   const {
     user: { sub },
   } = req;
@@ -25,4 +25,4 @@ userRouter.post("/", verifyToken, async (req, res) => {
   }
 });
 
-module.exports = userRouter;
+module.exports = deleteRouter;

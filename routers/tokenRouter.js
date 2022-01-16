@@ -10,10 +10,7 @@ tokenRouter.get("/", async (req, res) => {
     const token = cookies.refresh_token;
     const decodedRefreshToken = token ? jwtDecode(token) : null;
 
-    if (!token) {
-      return res.status(401).json({ message: "Not authorized!" });
-    }
-    if (decodedRefreshToken?.exp * 1000 < Date.now()) {
+    if (!token || decodedRefreshToken?.exp * 1000 < Date.now()) {
       return res.status(401).json({ message: "Not authorized!" });
     }
 

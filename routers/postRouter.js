@@ -39,12 +39,19 @@ postRouter.get("/:id", async (req, res) => {
 
 postRouter.post("/write", verifyToken, async (req, res) => {
   const {
-    body: { title, post, isPrivate },
+    body: { title, post, isJournals, isStudy, isBlogPosts },
     user: { sub },
   } = req;
 
   try {
-    await postService.writePost(title, sub, post, isPrivate);
+    await postService.writePost(
+      title,
+      sub,
+      post,
+      isJournals,
+      isStudy,
+      isBlogPosts
+    );
     res.status(200).json({ message: "Upload success!" });
   } catch (err) {
     console.log(err);
@@ -54,11 +61,18 @@ postRouter.post("/write", verifyToken, async (req, res) => {
 
 postRouter.post("/edit", verifyToken, async (req, res) => {
   const {
-    body: { title, post, postId, isPrivate },
+    body: { title, post, postId, isJournals, isStudy, isBlogPosts },
   } = req;
 
   try {
-    await postService.editPost(title, post, postId, isPrivate);
+    await postService.editPost(
+      title,
+      post,
+      postId,
+      isJournals,
+      isStudy,
+      isBlogPosts
+    );
     res.status(200).json({ message: "Edit success!" });
   } catch (err) {
     console.log(err);

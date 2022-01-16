@@ -3,7 +3,7 @@ const query = require("../utils/query");
 class PostService {
   getPost = async (postId) => {
     try {
-      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted from posts A left join users B on A.author = B.id where A.id = ? and A.deleted = 0`;
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.id = ? and A.deleted = 0`;
       const args = [postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
@@ -17,7 +17,7 @@ class PostService {
 
   getPosts = async () => {
     try {
-      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted from posts A left join users B on A.author = B.id where A.deleted = 0 order by A.created_at desc`;
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.deleted = 0 order by A.created_at desc`;
       const args = [];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
@@ -29,10 +29,10 @@ class PostService {
     }
   };
 
-  writePost = async (title, id, post, isPrivate) => {
-    const defaultStatus = isPrivate ? 2 : 0;
+  writePost = async (title, id, post, isJournals, isStudy, isBlogPosts) => {
+    const defaultStatus = isBlogPosts ? 0 : isJournals ? 1 : isStudy ? 2 : 0;
     try {
-      const queryString = `insert into posts (author, post, title, deleted, created_at) values (?, ?, ?, ?, now())`;
+      const queryString = `insert into posts (author, post, title, type, created_at) values (?, ?, ?, ?, now())`;
       const args = [id, post, title, defaultStatus];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
@@ -44,10 +44,10 @@ class PostService {
     }
   };
 
-  editPost = async (title, post, postId, isPrivate) => {
-    const defaultStatus = isPrivate ? 2 : 0;
+  editPost = async (title, post, postId, isJournals, isStudy, isBlogPosts) => {
+    const defaultStatus = isBlogPosts ? 0 : isJournals ? 1 : isStudy ? 2 : 0;
     try {
-      const queryString = `update posts set title = ?, post = ?, deleted = ? where id = ?`;
+      const queryString = `update posts set title = ?, post = ?, type = ? where id = ?`;
       const args = [title, post, defaultStatus, postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
