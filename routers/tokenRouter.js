@@ -14,10 +14,10 @@ tokenRouter.get("/", async (req, res) => {
       return res.status(401).json({ message: "Not authorized!" });
     }
 
-    const { sub, email } = decodedRefreshToken;
+    const { sub: id, email } = decodedRefreshToken;
 
     const user = {
-      sub,
+      id,
       email,
     };
 

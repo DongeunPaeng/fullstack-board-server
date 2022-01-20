@@ -29,11 +29,10 @@ class PostService {
     }
   };
 
-  writePost = async (title, id, post, isJournals, isStudy, isBlogPosts) => {
-    const defaultStatus = isBlogPosts ? 0 : isJournals ? 1 : isStudy ? 2 : 0;
+  writePost = async (title, id, post, type) => {
     try {
       const queryString = `insert into posts (author, post, title, type, created_at) values (?, ?, ?, ?, now())`;
-      const args = [id, post, title, defaultStatus];
+      const args = [id, post, title, type];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;
@@ -44,11 +43,10 @@ class PostService {
     }
   };
 
-  editPost = async (title, post, postId, isJournals, isStudy, isBlogPosts) => {
-    const defaultStatus = isBlogPosts ? 0 : isJournals ? 1 : isStudy ? 2 : 0;
+  editPost = async (title, post, postId, type) => {
     try {
       const queryString = `update posts set title = ?, post = ?, type = ? where id = ?`;
-      const args = [title, post, defaultStatus, postId];
+      const args = [title, post, type, postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;

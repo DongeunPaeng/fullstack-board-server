@@ -37,7 +37,7 @@ const hashPassword = async (password) => {
 const createToken = (user, type) => {
   const token = jwt.sign(
     {
-      sub: user.sub ?? user.id,
+      sub: user.id,
       email: user.email,
       iss: "dongeunpaeng",
       aud: "dongeunpaeng",

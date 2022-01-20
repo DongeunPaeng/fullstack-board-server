@@ -21,14 +21,19 @@ signupRouter.post("/", async (req, res) => {
     const user = queryResults[0];
 
     if (user) {
-      res.status(409).json({ message: "this email has been used before!" });
+      res.status(409).json({ message: "This email has been used before!" });
       return;
     }
 
-    const insertId = await authenticateService.saveUser(email, hashedPassword, clues);
+    const insertId = await authenticateService.saveUser(
+      email,
+      hashedPassword,
+      clues
+    );
+
     if (insertId) {
       const newUser = {
-        sub: insertId,
+        id: insertId,
         email,
       };
 

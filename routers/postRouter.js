@@ -1,5 +1,4 @@
 const express = require("express");
-const jwtDecode = require("jwt-decode");
 
 const { verifyToken } = require("../utils/common");
 
@@ -39,19 +38,12 @@ postRouter.get("/:id", async (req, res) => {
 
 postRouter.post("/write", verifyToken, async (req, res) => {
   const {
-    body: { title, post, isJournals, isStudy, isBlogPosts },
+    body: { title, post, type },
     user: { sub },
   } = req;
 
   try {
-    await postService.writePost(
-      title,
-      sub,
-      post,
-      isJournals,
-      isStudy,
-      isBlogPosts
-    );
+    await postService.writePost(title, sub, post, type);
     res.status(200).json({ message: "Upload success!" });
   } catch (err) {
     console.log(err);
@@ -61,18 +53,11 @@ postRouter.post("/write", verifyToken, async (req, res) => {
 
 postRouter.post("/edit", verifyToken, async (req, res) => {
   const {
-    body: { title, post, postId, isJournals, isStudy, isBlogPosts },
+    body: { title, post, postId, type },
   } = req;
 
   try {
-    await postService.editPost(
-      title,
-      post,
-      postId,
-      isJournals,
-      isStudy,
-      isBlogPosts
-    );
+    await postService.editPost(title, post, postId, type);
     res.status(200).json({ message: "Edit success!" });
   } catch (err) {
     console.log(err);
