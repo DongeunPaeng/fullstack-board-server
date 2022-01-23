@@ -3,7 +3,7 @@ const query = require("../utils/query");
 class PostService {
   getPost = async (postId) => {
     try {
-      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.id = ? and A.deleted = 0`;
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.id = ? and A.status = 0`;
       const args = [postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
@@ -17,7 +17,7 @@ class PostService {
 
   getPosts = async () => {
     try {
-      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.deleted = 0 order by A.created_at desc`;
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.status = 0 order by A.created_at desc`;
       const args = [];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
@@ -29,10 +29,10 @@ class PostService {
     }
   };
 
-  writePost = async (title, id, post, type) => {
+  writePost = async (title, id, post, type, status) => {
     try {
-      const queryString = `insert into posts (author, post, title, type, created_at) values (?, ?, ?, ?, now())`;
-      const args = [id, post, title, type];
+      const queryString = `insert into posts (author, post, title, type, status, created_at) values (?, ?, ?, ?, ?, now())`;
+      const args = [id, post, title, type, status];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;
@@ -43,10 +43,10 @@ class PostService {
     }
   };
 
-  editPost = async (title, post, postId, type) => {
+  editPost = async (title, post, postId, type, status) => {
     try {
-      const queryString = `update posts set title = ?, post = ?, type = ? where id = ?`;
-      const args = [title, post, type, postId];
+      const queryString = `update posts set title = ?, post = ?, type = ?, status = ? where id = ?`;
+      const args = [title, post, type, status, postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
         return rows.insertId;
@@ -59,7 +59,7 @@ class PostService {
 
   deletePost = async (postId) => {
     try {
-      const queryString = `update posts set deleted = 1 where id = ?`;
+      const queryString = `update posts set status = 1 where id = ?`;
       const args = [postId];
       const fn = async (conn) => {
         const [rows] = await conn.query(queryString, args);
