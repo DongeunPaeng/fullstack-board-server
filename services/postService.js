@@ -29,6 +29,34 @@ class PostService {
     }
   };
 
+  getDraft = async (postId) => {
+    try {
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.id = ?`;
+      const args = [postId];
+      const fn = async (conn) => {
+        const [rows] = await conn.query(queryString, args);
+        return rows;
+      };
+      return await query(fn);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
+  getDrafts = async () => {
+    try {
+      const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.status > 0 order by A.created_at desc`;
+      const args = [];
+      const fn = async (conn) => {
+        const [rows] = await conn.query(queryString, args);
+        return rows;
+      };
+      return await query(fn);
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
   writePost = async (title, id, post, type, status) => {
     try {
       const queryString = `insert into posts (author, post, title, type, status, created_at) values (?, ?, ?, ?, ?, now())`;

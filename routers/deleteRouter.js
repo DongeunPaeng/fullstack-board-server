@@ -21,7 +21,6 @@ deleteRouter.post("/", verifyToken, async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "something went wrong! sorry." });
-    // FIXME(dongteun): check if this works. I removed 'return'.
   }
 });
 

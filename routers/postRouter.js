@@ -18,6 +18,17 @@ postRouter.get("/", async (req, res) => {
   }
 });
 
+postRouter.post("/draft", verifyToken, async (req, res) => {
+  try {
+    const queryResults = await postService.getDrafts();
+    const posts = queryResults;
+
+    res.status(200).json({ posts });
+  } catch (err) {
+    return res.status(500).json({ message: "something went wrong! sorry." });
+  }
+});
+
 postRouter.get("/:id", async (req, res) => {
   const {
     params: { id },
@@ -27,6 +38,24 @@ postRouter.get("/:id", async (req, res) => {
 
   try {
     const queryResults = await postService.getPost(postId);
+    const post = queryResults[0];
+
+    res.status(200).json({ post });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "something went wrong! sorry." });
+  }
+});
+
+postRouter.get("/draft/:id", async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  const postId = id;
+
+  try {
+    const queryResults = await postService.getDraft(postId);
     const post = queryResults[0];
 
     res.status(200).json({ post });
