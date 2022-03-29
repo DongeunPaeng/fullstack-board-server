@@ -17,6 +17,7 @@ const tokenRouter = require("./routers/tokenRouter");
 const logoutRouter = require("./routers/logoutRouter");
 const postRouter = require("./routers/postRouter");
 const deleteRouter = require("./routers/deleteRouter");
+const bookRouter = require("./routers/bookRouter");
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/api/request-access-token", tokenRouter);
 app.use("/api/logout", logoutRouter);
 app.use("/api/post", postRouter);
 app.use("/api/delete", deleteRouter);
+app.use("/api/book", bookRouter);
 
 app.use(express.static(path.join(__dirname, "build")));
 
