@@ -1,12 +1,12 @@
 require("dotenv").config();
 const axios = require("axios").default;
 
-class BookService {
-    getBooks = async () => {
+class ChronologyService {
+    getEvents = async () => {
         try {
             const baseUrl = "https://sheets.googleapis.com/v4/spreadsheets/";
             const spreadsheetId = "1e3iKWRYHLQgT_xxEpoyVyS8YhPZq_BMZZo856krlhcc/";
-            const range = "Books!A:K";
+            const range = "Chronology!A:E";
 
             const headers = {
                 Authorization: "Bearer " + process.env.GOOGLE_API_KEY,
@@ -22,16 +22,17 @@ class BookService {
                 headers
             );
             const [columnName, ...rows] = result.data.values;
-            const books = rows.map((row) =>
+            // TODO: 여기 이해가 안 된다.
+            const events = rows.map((row) =>
                 row.reduce((a, b, index) => {
                     return { ...a, [columnName[index]]: b };
                 }, {})
             );
-            return books;
+            return events;
         } catch (err) {
             return res.status(500).json({ message: err });
         }
     };
 }
 
-module.exports = BookService;
+module.exports = ChronologyService;
