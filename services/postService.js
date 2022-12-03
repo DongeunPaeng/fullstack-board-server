@@ -15,10 +15,10 @@ class PostService {
         }
     };
 
-    getPreviousPost = async (createdAt) => {
+    getPreviousPost = async (post) => {
         try {
-            const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.id < ? and A.status = 0 order by A.created_at desc limit 1`;
-            const args = [String(createdAt)];
+            const queryString = `select A.id, A.post, A.created_at, A.title, B.email as author, A.author as author_id, B.deleted as deleted, A.type as type from posts A left join users B on A.author = B.id where A.created_at < ? and A.status = ? order by A.created_at desc limit 1`;
+            const args = [String(post.created_at), post.type];
             const fn = async (conn) => {
                 const [rows] = await conn.query(queryString, args);
                 return rows;
