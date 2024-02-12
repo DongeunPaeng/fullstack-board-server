@@ -39,7 +39,9 @@ postRouter.get("/:id", async (req, res) => {
         const post = queryResults[0];
         const previousPostQueryResult = await postService.getPreviousPost(post);
         const previousPost = previousPostQueryResult[0];
-        res.status(200).json({ post, previousPost });
+        const nextPostQueryResult = await postService.getNextPost(post);
+        const nextPost = nextPostQueryResult[0];
+        res.status(200).json({ post, previousPost, nextPost });
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "something went wrong! sorry." });
